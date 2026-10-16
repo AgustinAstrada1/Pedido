@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <!-- Viewport para celulares, con soporte para zonas seguras (notch) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Una sorpresa especial para vos ❤️">
+  <meta name="theme-color" content="#fdf6f0">
+  <title>Para Titi ❤️</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+
+    <!-- PANTALLA 1: El sobre -->
+    <section id="screen-envelope" class="screen active" aria-label="Sobre de carta">
+      <button id="envelope" class="envelope" type="button" aria-expanded="false" aria-label="Abrir la carta de amor">
+        <span class="env-body" aria-hidden="true">
+          <span class="env-paper"></span>
+          <span class="env-front"></span>
+          <span class="env-flap"></span>
+          <span class="env-seal">❤</span>
+        </span>
+      </button>
+      <p class="hint">Tengo algo para vos ❤️</p>
+      <p class="hint-sub">Tocá el sobre para abrirlo</p>
+    </section>
+
+    <!-- PANTALLA 2: La carta -->
+    <section id="screen-letter" class="screen" aria-label="Carta de amor">
+      <article class="letter">
+        <h1 id="letter-title" class="letter-title" tabindex="-1">Para Titi</h1>
+
+        <!-- EDITÁ ESTE TEXTO CON TUS PROPIAS PALABRAS -->
+        <div class="letter-body">
+          <p>Tiara, mi amor:</p>
+          <p>Quería hacer algo lindo y diferente para vos, porque hay cosas que siento que a veces me cuesta explicar con simples palabras. Y como sabés que soy un romanticon, no queria dejar pasar la oportunidad de hacerte esto jjsajaajaja.</p>
+          <p>Desde que llegaste a mi vida, te convertiste en una persona muy especial para mí. Me encanta estar con vos, hablar de cualquier cosa, reírnos juntos y compartir nuestros momentos. Pero lo que mas me encanta es cómo me siento cuando estoy a tu lado (osea completamente en abundancia y explotado de amor).</p>
+          <p>Me hacés sentir cosas que nunca había sentido por nadie, y te juro que a veces me pongo a pensar y desde ese primer dia en Rapanui que estoy completamente enamorado de vos. Soy muy feliz cuando estoy a tu lado, y lo más lindo es que no es algo que me pase solamente de vez en cuando, cada día que comparto con vos encuentro algo más que me enamora. A veces puede ser una cosa chiquita, la forma en la que me tratas o simplemente estar con vos, pero son esas cosas las que hacen que me dé cuenta de lo mucho que significás para mí. </p>
+          <p>Quiero estar toda mi vida con vos, acompañarte, verte feliz y estar para vos cuando me necesites. Quiero que sigamos creciendo juntos, que cumplamos nuestros sueños y que nos queden muchísimos momentos lindos por vivir (porque se que nos quedan muchos). Y también quiero estar en esos días que no son tan buenos, porque para mí quererte también significa acompañarte cuando las cosas no salen como uno espera.</p>
+          <p>Si algo tengo claro, es que quiero que seas vos. No porque todo tenga que ser perfecto, sino porque cuando pienso en todo lo lindo que me pasa, me doy cuenta de que tenerte a mi lado es una de las cosas que más feliz me hace. Y aunque nosotros ya compartimos algo hermoso, tenía ganas de hacerte esta sorpresa y preguntarte algo que para mí significa muchísimo. Quiero que tengamos ese momento especial, algo nuestro, que podamos recordar con una sonrisa cuando pase el tiempo. Así que, mi amor, después de hacerte leer toda esta carta jsajsajaja, llegó el momento de preguntarte lo que quería decirte desde el principio...</p>
+          <p class="signature">Con cariño,<br>tu Agus ❤️</p>
+        </div>
+
+        <p class="question">¿Querés ser mi novia? ❤️</p>
+
+        <div class="answers" id="answers">
+          <button id="btn-yes" class="btn btn-yes" type="button">Sí ❤️</button>
+          <!-- El «No» vive dentro de un hueco fijo para que el «Sí» no se mueva cuando el «No» escape -->
+          <span class="no-slot" id="no-slot">
+            <button id="btn-no" class="btn btn-no" type="button">No 🙈</button>
+          </span>
+        </div>
+        <p id="no-message" class="no-message" aria-live="polite"></p>
+      </article>
+    </section>
+
+    <!-- PANTALLA 3: Celebración -->
+    <section id="screen-celebration" class="screen" aria-label="Celebración">
+      <div id="hearts" class="hearts" aria-hidden="true"></div>
+      <div class="celebration-msg" role="status">
+        <h1 class="yes-title">¡CHIII! ❤️</h1>
+        <h2 class="love-title">TE AMO MUCHO ❤️</h2>
+        <!-- Frase secundaria editable -->
+        <p class="secondary">Sos lo mejor que me pasó en la vida.</p>
+      </div>
+    </section>
+
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

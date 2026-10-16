@@ -1,0 +1,476 @@
+/* ===== Variables de color, tipografía y sombras ===== */
+:root {
+  --cream: #fdf6f0;
+  --ivory: #fffdf9;
+  --rose: #f4a6b7;
+  --rose-soft: #ffd9e2;
+  --red: #e63950;
+  --red-deep: #b3123a;
+  --ink: #4a2c35;
+  --shadow: 0 12px 30px rgba(180, 60, 90, 0.18);
+  --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ===== Base ===== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow-x: hidden;            /* evita desplazamiento horizontal */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 20% 10%, #fff7f9 0%, transparent 50%),
+    radial-gradient(circle at 90% 90%, #ffe4ec 0%, transparent 45%),
+    var(--cream);
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.app {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+/* ===== Pantallas: solo una visible a la vez ===== */
+.screen {
+  position: fixed;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow-y: auto;              /* permite desplazarse si el contenido es largo */
+  padding:
+    max(1rem, env(safe-area-inset-top))
+    max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-left));
+}
+
+.screen.active {
+  display: flex;
+  animation: fadeIn 0.8s ease both;
+}
+/* La pantalla de la carta permite recorrer todo el contenido */
+#screen-letter {
+  justify-content: flex-start;
+  align-items: stretch;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* La carta crece según la cantidad de texto */
+#screen-letter .letter {
+  flex: 0 0 auto;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ===== PANTALLA 1: SOBRE ===== */
+.envelope {
+  position: relative;
+  /* Ancho proporcional y limitado también por la altura de la pantalla (landscape) */
+  width: min(78vw, 340px, calc((100vh - 9rem) * 1.5));
+  width: min(78vw, 340px, calc((100dvh - 9rem) * 1.5));
+  aspect-ratio: 3 / 2;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 14px;
+  -webkit-tap-highlight-color: transparent;
+  animation: float 4s ease-in-out infinite;
+}
+
+.envelope.open {
+  animation: none;
+  cursor: default;
+}
+
+.envelope:focus-visible {
+  outline: 3px solid var(--rose);
+  outline-offset: 6px;
+}
+
+/* Cuerpo del sobre */
+.env-body {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #fff6ef 0%, #ffe6ea 60%, #f9d3dc 100%);
+  box-shadow: var(--shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  z-index: 1;
+}
+
+/* Hoja que sale del sobre al abrirlo */
+.env-paper {
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 12%;
+  bottom: 10%;
+  border-radius: 6px;
+  background-color: var(--ivory);
+  background-image: repeating-linear-gradient(to bottom, transparent 0 17px, rgba(230, 57, 80, 0.12) 17px 18px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 2;
+  transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.35s;
+}
+
+.envelope.open .env-paper {
+  transform: translateY(-62%);
+}
+
+/* Parte delantera en forma de V (tapa la base de la hoja) */
+.env-front {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(170deg, #ffd3dd 0%, #f6aec0 100%);
+  clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
+  border-radius: 14px;
+}
+
+/* Solapa superior triangular */
+.env-flap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 58%;
+  z-index: 4;
+  background: linear-gradient(180deg, #ffc9d5 0%, #f7b3c3 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: 50% 0;
+  transition: transform 0.9s cubic-bezier(0.6, 0, 0.2, 1);
+}
+
+.envelope.open .env-flap {
+  transform: rotateX(180deg);
+  z-index: 1;                    /* al abrirse queda detrás de la hoja */
+}
+
+/* Sello de cera con corazón */
+.env-seal {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  z-index: 5;
+  width: clamp(44px, 13vw, 56px);
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: clamp(1.1rem, 4vw, 1.4rem);
+  background: radial-gradient(circle at 35% 30%, #ff6b85, #c81d3f);
+  box-shadow: 0 4px 10px rgba(150, 20, 50, 0.4), inset 0 -3px 6px rgba(0, 0, 0, 0.2);
+  transform: translate(-50%, -50%);
+  animation: sealPulse 2.4s ease-in-out infinite;
+  transition: opacity 0.3s ease;
+}
+
+.envelope.open .env-seal {
+  opacity: 0;
+  animation: none;
+}
+
+.hint {
+  font-family: var(--font-serif);
+  font-size: clamp(1.25rem, 5vw, 1.7rem);
+  color: var(--red-deep);
+  margin: 1.6rem 0 0.3rem;
+}
+
+.hint-sub {
+  font-size: 0.95rem;
+  opacity: 0.75;
+  margin: 0;
+}
+
+/* ===== PANTALLA 2: CARTA ===== */
+.letter {
+  margin: auto;                  /* centra si hay espacio, y no corta el contenido si no lo hay */
+  width: min(100%, 560px);
+  position: relative;
+  text-align: left;
+  padding: clamp(1.25rem, 5vw, 2.5rem);
+  border-radius: 18px;
+  border: 1px solid rgba(244, 166, 183, 0.35);
+  background: linear-gradient(180deg, #fffdf9 0%, #fff8f3 100%);
+  box-shadow: 0 18px 40px rgba(150, 60, 80, 0.18), 0 2px 6px rgba(0, 0, 0, 0.05);
+  animation: letterIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* Marco delicado decorativo */
+.letter::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px dashed rgba(244, 166, 183, 0.5);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.letter-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 6vw, 2.1rem);
+  color: var(--red-deep);
+  text-align: center;
+  margin: 0 0 0.8rem;
+}
+
+.letter-title:focus { outline: none; }
+
+.letter-body {
+  font-family: var(--font-serif);
+  font-size: clamp(1.02rem, 3.8vw, 1.15rem);
+  line-height: 1.75;
+  color: #5a3440;
+  overflow-wrap: break-word;
+}
+
+.letter-body p { margin: 0 0 1em; }
+
+.signature {
+  text-align: right;
+  font-style: italic;
+  margin-top: 1.4em !important;
+}
+
+.question {
+  font-family: var(--font-serif);
+  font-size: clamp(1.3rem, 5vw, 1.6rem);
+  font-weight: 700;
+  color: var(--red);
+  text-align: center;
+  margin: 1.4rem 0 1rem;
+}
+
+/* Zona de botones: espacio suficiente para que el «No» esquive */
+.answers {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 8.5rem;
+}
+
+.no-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== Botones ===== */
+.btn {
+  min-height: 52px;
+  min-width: 108px;
+  padding: 0.85rem 1.25rem;
+  border: 0;
+  border-radius: 999px;
+  font: 600 1.1rem var(--font-sans);
+  cursor: pointer;
+  touch-action: manipulation;    /* respuesta inmediata al tocar */
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.btn:focus-visible {
+  outline: 3px solid #ffb3c6;
+  outline-offset: 4px;
+}
+
+.btn-yes {
+  color: #fff;
+  background: linear-gradient(135deg, #ff5c7c, #e63950);
+  box-shadow: 0 8px 18px rgba(230, 57, 80, 0.35);
+}
+
+/* Hover solo como mejora; en táctiles también funciona con toque */
+.btn-yes:hover { transform: scale(1.07); }
+.btn-yes:active { transform: scale(0.96); }
+
+.btn-no {
+  color: #8a5a66;
+  background: #fff;
+  border: 2px solid #f4c2cd;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  transition: left 0.35s cubic-bezier(0.3, 0.7, 0.3, 1), top 0.35s cubic-bezier(0.3, 0.7, 0.3, 1), transform 0.25s ease;
+}
+
+/* Cuando el «No» se libera del flujo, se mueve dentro de .answers */
+.btn-no.free {
+  position: absolute;
+  z-index: 2;
+}
+
+.no-message {
+  min-height: 1.5em;
+  margin: 0.6rem 0 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--red-deep);
+}
+
+/* ===== PANTALLA 3: CELEBRACIÓN ===== */
+#screen-celebration {
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 40%, #fff0f4 0%, #ffd1dc 60%, #f7a8bd 100%);
+}
+
+.hearts {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.celebration-msg {
+  position: relative;
+  z-index: 2;
+  max-width: 92vw;
+  padding: 1.2rem 1.5rem;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: popIn 1s cubic-bezier(0.2, 0.9, 0.3, 1.2) 0.2s both;
+}
+
+.yes-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(2.6rem, 13vw, 5.5rem);
+  line-height: 1.05;
+  color: var(--red-deep);
+  text-shadow: 0 4px 18px rgba(255, 255, 255, 0.7);
+  overflow-wrap: break-word;
+}
+
+.love-title {
+  margin: 0.3rem 0;
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 9vw, 3.8rem);
+  letter-spacing: 0.04em;
+  color: var(--red);
+}
+
+.secondary {
+  margin: 0.5rem 0 0;
+  font-size: clamp(1rem, 4vw, 1.25rem);
+  font-style: italic;
+  color: #7a3a4d;
+}
+
+/* Corazones: caen o suben con deriva lateral y rotación */
+.heart {
+  position: absolute;
+  top: -12%;
+  line-height: 1;
+  animation-name: heartFall;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  will-change: transform;
+  user-select: none;
+}
+
+.heart.rise {
+  top: auto;
+  bottom: -12%;
+  animation-name: heartRise;
+}
+
+/* ===== Animaciones ===== */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes sealPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.07); }
+}
+
+@keyframes letterIn {
+  from { opacity: 0; transform: translateY(40px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.7) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes heartFall {
+  from { transform: translate3d(0, 0, 0) rotate(0deg); }
+  to { transform: translate3d(var(--drift, 0px), 120vh, 0) rotate(var(--rot, 0deg)); }
+}
+
+@keyframes heartRise {
+  from { transform: translate3d(0, 0, 0) rotate(0deg); }
+  to { transform: translate3d(var(--drift, 0px), -120vh, 0) rotate(var(--rot, 0deg)); }
+}
+
+/* ===== Ajustes para pantallas más grandes (tablet y computadora) ===== */
+@media (min-width: 768px) {
+  .letter { padding: 2.8rem 3rem; }
+  .btn { font-size: 1.2rem; min-width: 130px; }
+  .hint { margin-top: 2rem; }
+}
+
+/* ===== Movimiento reducido: menos animación para quien lo prefiera ===== */
+@media (prefers-reduced-motion: reduce) {
+  .envelope,
+  .env-seal,
+  .letter,
+  .celebration-msg,
+  .screen.active {
+    animation: none !important;
+  }
+
+  .env-paper,
+  .env-flap,
+  .btn,
+  .btn-no {
+    transition-duration: 0.01s !important;
+  }
+}
+
+@media (max-width: 767px) {
+  #screen-letter {
+    padding-top: max(1rem, env(safe-area-inset-top));
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  }
+
+  #screen-letter .letter {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .letter-body {
+    line-height: 1.65;
+  }
+
+  .answers {
+    flex-wrap: wrap;
+  }
+}
